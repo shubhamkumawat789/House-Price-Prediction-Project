@@ -66,11 +66,30 @@ The model performs well with:
 
 # 📂 Project Structure
 ```
-├── app.py
-├── house_price_pipe.pkl
-├── feature_importance.csv
-├── HousePricePrediction.xlsx
+House-Price-Prediction-Project/
+│
+├── app/
+│   └── app.py
+│
+├── models/
+│   └── house_price_pipe.pkl
+│
+├── data/
+│   ├── HousePricePrediction.xlsx
+│   └── feature_importance.csv
+│
+├── notebooks/
+│   └── House Price Prediction using Machine Learning.ipynb
+│
+├── docker/
+│   └── Dockerfile
+│
+├── docs/
+│   └── README.md
+│
 ├── requirements.txt
-├── README.md
+├── LICENSE
+└── .gitattributes
+
 ```
 
