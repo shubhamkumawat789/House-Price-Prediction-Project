@@ -2,13 +2,17 @@ import streamlit as st
 import pandas as pd
 import pickle
 import matplotlib.pyplot as plt
+import datetime  # NEW
+
 
 with open("house_price_pipe.pkl", "rb") as f:
     model = pickle.load(f)
 
 st.set_page_config(page_title="House Price Predictor", layout="wide")
 
+
 tab1, tab2, tab3 = st.tabs(["🏠 Prediction", "📊 Model info", "🔍 Feature importance"])
+
 
 with tab1:
     st.title("Estimate house price")
@@ -32,7 +36,10 @@ with tab1:
         LotConfig = st.selectbox("Lot configuration", ["Inside", "Corner", "FR2", "FR3", "CulDSac"])
         BldgType = st.selectbox("Building type", ["1Fam", "2fmCon", "Duplex", "TwnhsE", "Twnhs"])
         YearRemodAdd = st.number_input("Year remodeled", min_value=1800, max_value=2025, value=2005)
-        Exterior1st = st.selectbox("Exterior finish (Exterior1st)", ["VinylSd", "MetalSd", "Wd Sdng", "HdBoard", "Stucco"])
+        Exterior1st = st.selectbox(
+            "Exterior finish (Exterior1st)",
+            ["VinylSd", "MetalSd", "Wd Sdng", "HdBoard", "Stucco"],
+        )
         TotalBsmtSF = st.number_input("Total basement area (sq ft)", min_value=0, max_value=3000, value=800)
 
     input_data = {
@@ -50,6 +57,26 @@ with tab1:
     }
 
     input_df = pd.DataFrame([input_data])
+
+    current_year = datetime.datetime.now().year
+
+    input_df["HouseAge"] = current_year - input_df["YearBuilt"]
+    input_df["YearsSinceRemod"] = current_year - input_df["YearRemodAdd"]
+
+    input_df["BsmtFinRatio"] = input_df["BsmtFinSF2"] / input_df["TotalBsmtSF"]
+    input_df["BsmtFinRatio"] = input_df["BsmtFinRatio"].fillna(0)
+
+    input_df["TotalLivingArea"] = input_df["TotalBsmtSF"] + input_df["BsmtFinSF2"]
+
+    input_df["IsRemodeled"] = (input_df["YearBuilt"] != input_df["YearRemodAdd"]).astype(int)
+
+    # Use fixed bins but same labels as training
+    input_df["LotAreaCategory"] = pd.cut(
+        input_df["LotArea"],
+        bins=[0, 5000, 10000, 15000, 1e9],
+        labels=["Small", "Medium", "Large", "XL"],
+        include_lowest=True,
+    ).astype(str)
 
     if st.button("Predict price"):
         price = model.predict(input_df)[0]
@@ -85,6 +112,7 @@ with tab2:
         "- Robust to outliers\n"
         "- Provides feature importance for interpretation"
     )
+
 
 with tab3:
     st.header("Feature importance")
