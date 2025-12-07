@@ -34,12 +34,13 @@ This project uses a structured housing dataset containing property characteristi
 # 🧠 Feature Engineering
 
 To improve model performance, several new features were created:
-HouseAge – current year minus year built
-YearsSinceRemod – years since last remodeling
-TotalLivingArea – total usable basement space
-BsmtFinRatio – percentage of basement that is finished
-IsRemodeled – 1 if renovated, otherwise 0
-LotAreaCategory – buckets: Small / Medium / Large / XL
+
+- HouseAge – current year minus year built
+- YearsSinceRemod – years since last remodeling
+- TotalLivingArea – total usable basement space
+- BsmtFinRatio – percentage of basement that is finished
+- IsRemodeled – 1 if renovated, otherwise 0
+- LotAreaCategory – buckets: Small / Medium / Large / XL
 
 These engineered features help the model capture patterns that raw features alone cannot.
 
